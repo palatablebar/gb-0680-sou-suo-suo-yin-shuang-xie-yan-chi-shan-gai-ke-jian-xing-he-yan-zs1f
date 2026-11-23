@@ -12,6 +12,13 @@ def evaluate(rows,context):
         excluded=intake["duplicate"]+intake["blank"]+intake["repeated_headers"]
         m.update(input=intake["input"],excluded=excluded,balanced=intake["input"]==len(accepted)+len(rejected)+excluded)
     else:m.update(input=len(accepted)+len(rejected),excluded=0,balanced=True)
+    release=context.get("release")
+    if release:
+        for row in rows:
+            if row.get("release_selected") is False and Decimal(str(row.get("reported","0")))!=0: raise DomainError("RELEASE_IMPERSONATION","未入选文档不能记为已同步")
+        positions=[e["position"] for e in release["entries"]]
+        row_positions={r.get("release_position") for r in rows if r.get("release_position") is not None}
+        m.update(release_id=release["release_id"],backlog=release["backlog"],released=release["selected"],skipped=release["skipped"],release_balanced=len(positions)==len(set(positions)) and release["selected"]+release["skipped"]==release["backlog"] and row_positions==set(positions))
     output=[]
     for row in rows:
         expected=Decimal(str(row.get("expected","0")));reported=Decimal(str(row.get("reported","0")))

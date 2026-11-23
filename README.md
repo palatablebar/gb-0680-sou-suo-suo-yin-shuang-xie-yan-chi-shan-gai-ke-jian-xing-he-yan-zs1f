@@ -23,7 +23,7 @@ docker compose exec -T app pytest -q
 
 ## 核心规则
 
-按源版本重建目标可见状态，删除墓碑拦截迟到旧写入；延迟与缺失分开定责。
+按源版本重建目标可见状态，删除墓碑拦截迟到旧写入；延迟与缺失分开定责。每次放行形成唯一积压队列范围：撤下类优先、类内按到达先后，取额度内前缀生成内容寻址的放行单；延迟闸门、双写对账、回补归档与页面、导出共用同一放行单，未入选文档保留原始位置与跳过原因且不得记为已同步。
 
 ## 演示
 
@@ -34,7 +34,7 @@ docker compose exec -T app pytest -q
 
 ## 输入与输出
 
-输入列见 `docs/DATA-DICTIONARY.md`。项目包含dirty.csv、clean.csv、legacy.csv，统一走实际导入路径。上传限制4MB，拒绝不带时区的时间。业务键按字符串保留，Decimal参与计算，空值不会当零。
+输入列见 `docs/DATA-DICTIONARY.md`。项目包含dirty.csv、clean.csv、legacy.csv、backlog.csv，统一走实际导入路径。上传限制4MB，拒绝不带时区的时间。业务键按字符串保留，Decimal参与计算，空值不会当零。
 
 `POST /api/runs` 接收sample或csv；`GET /api/runs`返回历史批次；`POST /api/runs/<id>/review`需要version与decision；`GET /api/runs/<id>/archive`返回唯一证据导出。
 

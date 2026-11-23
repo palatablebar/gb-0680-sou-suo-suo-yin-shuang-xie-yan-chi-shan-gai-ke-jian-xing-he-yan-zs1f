@@ -1,3 +1,3 @@
 # 接口
 
-模块GET使用仓内样例，模块POST可传csv或rows与context，直接计算当前规则。/api/runs使用完整流水线并原子保存。每个阶段返回rows、quarantine、metrics；后续阶段还返回累计隔离。/api/upload接收multipart文件file。/api/runs/<id>/archive只导出一份带清单与证据的CSV。
+模块GET使用仓内样例，模块POST可传csv或rows与context，直接计算当前规则。/api/runs使用完整流水线并原子保存。每个阶段返回rows、quarantine、metrics；后续阶段还返回累计隔离。延迟闸门阶段额外返回release放行单（entries含原始位置position、放行序号rank、动作action、是否入选selected与跳过原因skip_reason），对账与归档阶段在metrics中回引同一release_id。/api/upload接收multipart文件file。/api/runs/<id>/archive只导出一份带清单与证据的CSV，列含release_id、release_position、release_selected、skip_reason。参数release_quota控制每次放行额度，需为非负整数，默认100。
